@@ -341,30 +341,30 @@ export default function AdminDashboard() {
     <>
       <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
         {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-white flex flex-col">
-        <div className="p-6 text-2xl font-bold tracking-tight border-b border-slate-800 flex items-center gap-2">
-          <LayoutDashboard className="w-6 h-6 text-blue-400" />
-          Admin Panel
+      <aside className="w-full md:w-64 bg-slate-900 text-white flex flex-col shrink-0 z-20 shadow-xl">
+        <div className="p-4 md:p-6 text-xl md:text-2xl font-bold tracking-tight border-b border-slate-800 flex items-center gap-2">
+          <LayoutDashboard className="w-6 h-6 text-blue-400 shrink-0" />
+          <span className="truncate">Admin Panel</span>
         </div>
-        <nav className="flex-1 p-4 flex flex-col gap-2">
-          <button onClick={() => setActiveTab("schedules")} className={`p-3 text-left rounded-lg transition-colors ${activeTab === 'schedules' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300'}`}>
+        <nav className="flex-1 p-4 flex flex-row overflow-x-auto md:flex-col gap-2 no-scrollbar border-b md:border-b-0 border-slate-800">
+          <button onClick={() => setActiveTab("schedules")} className={`p-3 text-left rounded-lg transition-colors whitespace-nowrap ${activeTab === 'schedules' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300'}`}>
             Kelola Jadwal
           </button>
-          <button onClick={() => setActiveTab("master")} className={`p-3 text-left rounded-lg transition-colors ${activeTab === 'master' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300'}`}>
+          <button onClick={() => setActiveTab("master")} className={`p-3 text-left rounded-lg transition-colors whitespace-nowrap ${activeTab === 'master' ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300'}`}>
             Data Master
           </button>
-          <button onClick={() => setActiveTab("announce")} className={`p-3 text-left rounded-lg transition-colors ${activeTab === 'announce' ? 'bg-orange-600 text-white' : 'hover:bg-slate-800 text-slate-300'}`}>
+          <button onClick={() => setActiveTab("announce")} className={`p-3 text-left rounded-lg transition-colors whitespace-nowrap ${activeTab === 'announce' ? 'bg-orange-600 text-white' : 'hover:bg-slate-800 text-slate-300'}`}>
             Pengumuman Darurat
           </button>
-          <button onClick={() => setActiveTab("settings")} className={`p-3 text-left rounded-lg transition-colors ${activeTab === 'settings' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 text-slate-300'}`}>
+          <button onClick={() => setActiveTab("settings")} className={`p-3 text-left rounded-lg transition-colors whitespace-nowrap ${activeTab === 'settings' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 text-slate-300'}`}>
             Pengaturan Khusus
           </button>
         </nav>
       </aside>
 
       {/* Main Area */}
-      <main className="flex-1 p-10 overflow-y-auto text-slate-800">
-        <h1 className="text-3xl font-black mb-8">
+      <main className="flex-1 p-4 md:p-10 overflow-y-auto text-slate-800 w-full overflow-x-hidden">
+        <h1 className="text-2xl md:text-3xl font-black mb-6 md:mb-8">
           {activeTab === 'schedules' && 'Manajemen Jadwal Kuliah'}
           {activeTab === 'master' && 'Manajemen Data Master'}
           {activeTab === 'announce' && 'Pengumuman Manual (Darurat)'}
@@ -373,9 +373,9 @@ export default function AdminDashboard() {
 
         {activeTab === 'schedules' && (
           <div className="space-y-8">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200">
               <h2 className="text-xl font-bold mb-4">Tambah Jadwal Baru</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                 <select className="border p-2 rounded-lg" value={schedCourse} onChange={e => setSchedCourse(e.target.value)}>
                   <option value="">Pilih Mata Kuliah</option>
                   {courses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -404,9 +404,10 @@ export default function AdminDashboard() {
               )}
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
               <h2 className="text-xl font-bold mb-4">Daftar Jadwal</h2>
-              <table className="w-full text-left">
+              <div className="overflow-x-auto">
+              <table className="w-full text-left min-w-[800px]">
                 <thead className="bg-slate-100 text-slate-600">
                   <tr>
                     <th className="p-3">Hari</th>
@@ -439,6 +440,7 @@ export default function AdminDashboard() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         )}

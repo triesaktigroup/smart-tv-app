@@ -538,7 +538,7 @@ export default function TVDashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 grid grid-cols-12 gap-8 relative overflow-hidden">
+      <main className="flex-1 p-4 md:p-8 flex flex-col xl:grid xl:grid-cols-12 gap-4 md:gap-8 relative overflow-hidden overflow-y-auto xl:overflow-hidden">
         {/* Decorative background blobs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
@@ -638,7 +638,7 @@ export default function TVDashboard() {
         </div>
 
         {/* UPCOMING (Right Column - 4 spans) */}
-        <div className="col-span-4 flex flex-col gap-6 z-10 border-l border-slate-800/50 pl-8">
+        <div className="xl:col-span-4 flex flex-col gap-6 z-10 border-t xl:border-t-0 xl:border-l border-slate-800/50 pt-8 xl:pt-0 xl:pl-8">
           <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-200">
             <Calendar className="w-6 h-6 text-blue-400" />
             Akan Datang
