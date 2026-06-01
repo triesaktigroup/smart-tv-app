@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { format, parse, isAfter, isBefore, addMinutes, subMinutes, getDay } from "date-fns";
 import { id } from "date-fns/locale";
-import { Clock, Calendar, MapPin, User, BookOpen, Volume2 } from "lucide-react";
+import { Clock, Calendar, MapPin, User, BookOpen, Volume2, Tv } from "lucide-react";
 
 type Schedule = {
   id: string;
@@ -22,6 +22,7 @@ export default function TVDashboard() {
   const schedulesRef = useRef<Schedule[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [mounted, setMounted] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const [ongoing, setOngoing] = useState<any[]>([]);
   const [upcoming, setUpcoming] = useState<any[]>([]);
   const [ending, setEnding] = useState<any[]>([]);
@@ -433,6 +434,27 @@ export default function TVDashboard() {
 
   // Helper to format HH:mm:ss to HH:mm
   if (!mounted) return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-500">Memuat sistem...</div>;
+
+  if (!hasStarted) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-8 text-center space-y-8">
+        <div className="text-slate-400 max-w-md">
+          <Tv className="w-20 h-20 mx-auto mb-6 opacity-50" />
+          <h2 className="text-2xl font-bold text-white mb-2">Sistem Smart TV Siap</h2>
+          <p>Klik tombol di bawah ini untuk memulai tampilan informasi dalam mode layar penuh (Fullscreen).</p>
+        </div>
+        <button 
+          onClick={() => {
+            document.documentElement.requestFullscreen().catch(e => console.log(e));
+            setHasStarted(true);
+          }} 
+          className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-2xl py-6 px-12 rounded-full shadow-2xl shadow-blue-900/50 hover:scale-105 transition-all animate-pulse"
+        >
+          Mulai Tampilan Smart TV
+        </button>
+      </div>
+    );
+  }
 
   if (isPlayingVideo) {
     return (

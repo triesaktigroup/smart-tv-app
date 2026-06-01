@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Mic, Plus, Trash2, LayoutDashboard, User, Pencil, X, Settings } from "lucide-react";
+import { Mic, Plus, Trash2, LayoutDashboard, User, Pencil, X, Settings, Lock } from "lucide-react";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("schedules");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [pinInput, setPinInput] = useState("");
+  const [pinError, setPinError] = useState(false);
   
   // Data States
   const [courses, setCourses] = useState<any[]>([]);
@@ -291,6 +294,48 @@ export default function AdminDashboard() {
   };
 
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full animate-in zoom-in-95 duration-300">
+          <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl font-bold text-center text-slate-800 mb-2">Akses Terkunci</h2>
+          <p className="text-center text-slate-500 text-sm mb-8">Masukkan PIN Keamanan untuk mengakses Panel Admin.</p>
+          
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if (pinInput === "123456") {
+              setIsAuthenticated(true);
+            } else {
+              setPinError(true);
+              setTimeout(() => setPinError(false), 2000);
+            }
+          }} className="space-y-6">
+            <div>
+              <input 
+                type="password" 
+                value={pinInput}
+                onChange={e => setPinInput(e.target.value)}
+                placeholder="• • • • • •"
+                className={`w-full text-center tracking-[0.5em] text-2xl px-4 py-4 rounded-xl border ${pinError ? 'border-red-500 bg-red-50 text-red-600' : 'border-slate-300 bg-slate-50 text-slate-900'} focus:ring-2 focus:ring-blue-500 transition-colors`}
+                autoFocus
+              />
+              {pinError && <p className="text-red-500 text-xs font-semibold text-center mt-2 animate-bounce">PIN tidak valid!</p>}
+            </div>
+            <button 
+              type="submit" 
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-blue-600/30 transition-all active:scale-95"
+            >
+              Buka Kunci
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
