@@ -307,7 +307,7 @@ export default function AdminDashboard() {
           
           <form onSubmit={(e) => {
             e.preventDefault();
-            if (pinInput === "123456") {
+            if (pinInput === "101010") {
               setIsAuthenticated(true);
             } else {
               setPinError(true);
