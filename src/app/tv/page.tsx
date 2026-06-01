@@ -501,9 +501,6 @@ export default function TVDashboard() {
 
   return (
     <>
-      <div className="fixed bottom-0 right-0 p-1 text-[10px] text-slate-800 z-[100] font-mono">
-        T:{settings?.['indonesia_raya_time']} V:{settings?.['indonesia_raya_video_url'] ? 'Y' : 'N'}
-      </div>
       {!audioEnabled && (
         <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center">
           <div className="w-24 h-24 bg-blue-500/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
@@ -694,6 +691,11 @@ export default function TVDashboard() {
           </div>
         </div>
       </main>
+      </div>
+      {/* DEBUG INFO */}
+      <div className="fixed bottom-0 left-0 p-2 text-xs text-white z-[9999] bg-black/50 font-mono">
+        DEBUG: schedules={schedules.length} | day={getDay(currentTime)} | time={format(currentTime, 'HH:mm:ss')} | 
+        ongoing={getOngoingAndUpcoming().ongoing.length} | upcoming={getOngoingAndUpcoming().upcoming.length}
       </div>
     </>
   );
