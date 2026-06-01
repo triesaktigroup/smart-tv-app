@@ -8,7 +8,7 @@ export default function Home() {
     <div className="relative min-h-screen w-full bg-slate-900 overflow-hidden">
       {/* Background Image - The user's uploaded image will fill the screen */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('/bg-portal.jpg')] bg-cover bg-center bg-no-repeat"></div>
+        <img src="/bg-portal.jpg" alt="Portal Background" className="absolute inset-0 w-full h-full object-cover" />
         {/* Subtle gradient at the bottom so buttons are always readable */}
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent"></div>
       </div>
