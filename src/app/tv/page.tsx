@@ -42,6 +42,10 @@ export default function TVDashboard() {
   const announcementQueueRef = useRef<{text?: string, audioUrl?: string, onFinish?: () => void}[]>([]);
   const isProcessingQueueRef = useRef(false);
 
+  const formatTime = (timeStr: string) => {
+    return timeStr ? timeStr.substring(0, 5) : '';
+  };
+
   useEffect(() => {
     // Initial fetch
     fetchSchedules();

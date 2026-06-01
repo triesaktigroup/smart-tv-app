@@ -647,7 +647,6 @@ export default function AdminDashboard() {
       </main>
     </div>
 
-    {/* Upload Progress Overlay */}
     {uploadStatus.isUploading && (
       <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
         <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full mx-4 transform animate-in zoom-in-95 duration-200">
