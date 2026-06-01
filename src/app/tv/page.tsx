@@ -23,9 +23,7 @@ export default function TVDashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [mounted, setMounted] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const [ongoing, setOngoing] = useState<any[]>([]);
-  const [upcoming, setUpcoming] = useState<any[]>([]);
-  const [ending, setEnding] = useState<any[]>([]);
+  // ongoing/upcoming/ending are derived directly from getOngoingAndUpcoming() below
 
   // Special Settings
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
@@ -447,7 +445,7 @@ export default function TVDashboard() {
     return { ongoing, upcoming, ending };
   };
 
-  const { ongoing: o, upcoming: u, ending: e } = getOngoingAndUpcoming();
+  const { ongoing, upcoming, ending } = getOngoingAndUpcoming();
 
   // Helper to format HH:mm:ss to HH:mm
   if (!mounted) return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-500">Memuat sistem...</div>;
