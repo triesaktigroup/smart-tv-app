@@ -513,7 +513,7 @@ export default function TVDashboard() {
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">
-              Fasilitas Kampus
+              Aplikasi Monitoring Perkuliahan
             </h1>
             <p className="text-slate-400 font-medium tracking-wide">Smart TV Signage & Announcer</p>
           </div>
