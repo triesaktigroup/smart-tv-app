@@ -192,7 +192,8 @@ export default function AdminDashboard() {
       room_id: schedRoom,
       day_of_week: parseInt(schedDay),
       start_time: schedStart,
-      end_time: schedEnd
+      end_time: schedEnd,
+      is_active: true
     };
 
     if (editScheduleId) {

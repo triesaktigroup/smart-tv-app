@@ -74,6 +74,21 @@ export default function TVDashboard() {
           fetchSchedules();
         }
       )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'courses' },
+        () => fetchSchedules()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'lecturers' },
+        () => fetchSchedules()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'rooms' },
+        () => fetchSchedules()
+      )
       .subscribe();
 
     return () => {
