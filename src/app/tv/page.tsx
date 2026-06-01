@@ -114,6 +114,10 @@ export default function TVDashboard() {
         announcedRef.current.delete(`indonesia-raya-play-${currentDayStr}`);
         fetchSchedules();
       })
+      .on('broadcast', { event: 'schedule-updated' }, () => {
+        console.log('Schedule updated broadcast received! Refreshing...');
+        fetchSchedules();
+      })
       .subscribe((status) => {
         console.log('TV Broadcast Status:', status);
       });
@@ -125,6 +129,10 @@ export default function TVDashboard() {
 
   useEffect(() => {
     fetchSchedules();
+    // Polling fallback every 30 seconds in case realtime is disconnected
+    const pollInterval = setInterval(() => {
+      fetchSchedules();
+    }, 30000);
     const interval = setInterval(() => {
       const now = new Date();
       setCurrentTime(now);
@@ -196,7 +204,7 @@ export default function TVDashboard() {
       
       checkAnnouncements(now);
     }, 1000);
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval); clearInterval(pollInterval); };
   }, []);
 
   const fetchSchedules = async () => {

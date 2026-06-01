@@ -203,6 +203,15 @@ export default function AdminDashboard() {
       await supabase.from("schedules").insert(payload);
     }
     
+    // Broadcast ke TV agar langsung refresh
+    if (broadcastChannel) {
+      await broadcastChannel.send({
+        type: 'broadcast',
+        event: 'schedule-updated',
+        payload: { updatedAt: new Date().toISOString() },
+      });
+    }
+    
     setSchedCourse(""); setSchedLecturer(""); setSchedRoom(""); setSchedStart(""); setSchedEnd("");
     fetchData();
   };
@@ -219,6 +228,14 @@ export default function AdminDashboard() {
 
   const deleteRecord = async (table: string, id: string) => {
     await supabase.from(table).delete().eq("id", id);
+    // Broadcast ke TV jika jadwal dihapus
+    if (table === 'schedules' && broadcastChannel) {
+      await broadcastChannel.send({
+        type: 'broadcast',
+        event: 'schedule-updated',
+        payload: { updatedAt: new Date().toISOString() },
+      });
+    }
     fetchData();
   };
 
