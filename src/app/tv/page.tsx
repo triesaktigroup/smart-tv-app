@@ -698,11 +698,6 @@ export default function TVDashboard() {
         </div>
       </main>
       </div>
-      {/* DEBUG INFO */}
-      <div className="fixed bottom-0 left-0 p-2 text-xs text-white z-[9999] bg-black/50 font-mono">
-        DEBUG: schedules={schedules.length} | day={getDay(currentTime)} | time={format(currentTime, 'HH:mm:ss')} | 
-        ongoing={getOngoingAndUpcoming().ongoing.length} | upcoming={getOngoingAndUpcoming().upcoming.length}
-      </div>
     </>
   );
 }
