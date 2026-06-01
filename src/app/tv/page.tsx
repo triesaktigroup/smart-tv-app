@@ -411,8 +411,10 @@ export default function TVDashboard() {
     schedules.forEach(schedule => {
       if (schedule.day_of_week !== currentDay) return;
 
-      const start = parse(schedule.start_time, 'HH:mm:ss', currentTime);
-      const end = parse(schedule.end_time, 'HH:mm:ss', currentTime);
+      const startStr = schedule.start_time.substring(0, 5);
+      const endStr = schedule.end_time.substring(0, 5);
+      const start = parse(startStr, 'HH:mm', currentTime);
+      const end = parse(endStr, 'HH:mm', currentTime);
 
       const currentMs = currentTime.getTime();
       const startMs = start.getTime();
