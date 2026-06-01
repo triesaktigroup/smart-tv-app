@@ -437,18 +437,18 @@ export default function TVDashboard() {
 
   if (!hasStarted) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-8 text-center space-y-8">
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center space-y-6">
         <div className="text-slate-400 max-w-md">
-          <Tv className="w-20 h-20 mx-auto mb-6 opacity-50" />
-          <h2 className="text-2xl font-bold text-white mb-2">Sistem Smart TV Siap</h2>
-          <p>Klik tombol di bawah ini untuk memulai tampilan informasi dalam mode layar penuh (Fullscreen).</p>
+          <Tv className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 opacity-50" />
+          <h2 className="text-xl md:text-2xl font-bold text-white mb-2">Sistem Smart TV Siap</h2>
+          <p className="text-sm md:text-base">Klik tombol di bawah ini untuk memulai tampilan informasi dalam mode layar penuh (Fullscreen).</p>
         </div>
         <button 
           onClick={() => {
             document.documentElement.requestFullscreen().catch(e => console.log(e));
             setHasStarted(true);
           }} 
-          className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-2xl py-6 px-12 rounded-full shadow-2xl shadow-blue-900/50 hover:scale-105 transition-all animate-pulse"
+          className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg md:text-2xl py-4 px-8 md:py-6 md:px-12 rounded-full shadow-2xl shadow-blue-900/50 hover:scale-105 transition-all animate-pulse w-full max-w-sm"
         >
           Mulai Tampilan Smart TV
         </button>
@@ -505,32 +505,32 @@ export default function TVDashboard() {
 
       <div className={`min-h-screen bg-slate-950 text-white overflow-hidden flex flex-col font-sans ${!audioEnabled ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}`}>
         {/* Header */}
-        <header className="h-24 bg-slate-900/50 backdrop-blur-md border-b border-slate-800 flex items-center justify-between px-10 shadow-2xl z-10 relative">
+        <header className="min-h-[6rem] h-auto bg-slate-900/50 backdrop-blur-md border-b border-slate-800 flex flex-col sm:flex-row items-center sm:justify-between p-4 md:px-10 md:py-0 shadow-2xl z-10 relative gap-4 sm:gap-0 text-center sm:text-left">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 pointer-events-none" />
-        <div className="flex items-center gap-4 z-10">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <MapPin className="w-6 h-6 text-white" />
+        <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4 z-10">
+          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+            <MapPin className="w-5 h-5 md:w-6 md:h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">
+            <h1 className="text-xl md:text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">
               Aplikasi Monitoring Perkuliahan
             </h1>
-            <p className="text-slate-400 font-medium tracking-wide">Smart TV Signage & Announcer</p>
+            <p className="text-xs md:text-sm lg:text-base text-slate-400 font-medium tracking-wide">Smart TV Signage & Announcer</p>
           </div>
         </div>
         
-        <div className="flex items-center gap-8 z-10">
+        <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-8 z-10">
           {isSpeaking && (
-            <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 animate-pulse">
-              <Volume2 className="w-5 h-5" />
-              <span className="font-semibold tracking-wide">AI Announcer Active</span>
+            <div className="flex items-center gap-2 md:gap-3 px-3 py-1 md:px-4 md:py-2 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 animate-pulse text-xs md:text-sm">
+              <Volume2 className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="font-semibold tracking-wide">AI Announcer</span>
             </div>
           )}
-          <div className="text-right">
-            <div className="text-4xl font-extrabold tracking-tighter text-white tabular-nums drop-shadow-md">
+          <div className="text-center sm:text-right">
+            <div className="text-2xl md:text-4xl font-extrabold tracking-tighter text-white tabular-nums drop-shadow-md">
               {format(currentTime, 'HH:mm:ss')}
             </div>
-            <div className="text-slate-400 font-medium">
+            <div className="text-xs md:text-sm text-slate-400 font-medium">
               {format(currentTime, 'EEEE, dd MMMM yyyy', { locale: id })}
             </div>
           </div>
