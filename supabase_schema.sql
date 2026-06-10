@@ -7,6 +7,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS lecturers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
+    photo_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -38,11 +39,19 @@ CREATE TABLE IF NOT EXISTS schedules (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Table: settings
+CREATE TABLE IF NOT EXISTS settings (
+    key VARCHAR(255) PRIMARY KEY,
+    value TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Enable Row Level Security (RLS)
 ALTER TABLE lecturers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rooms ENABLE ROW LEVEL SECURITY;
 ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE schedules ENABLE ROW LEVEL SECURITY;
+ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
 
 -- Create policies to allow public read access (for TV) and authenticated access (for Admin)
 -- For simplicity in this project, we'll allow public reads to all tables.
@@ -51,6 +60,7 @@ CREATE POLICY "Allow public read access on lecturers" ON lecturers FOR SELECT US
 CREATE POLICY "Allow public read access on rooms" ON rooms FOR SELECT USING (true);
 CREATE POLICY "Allow public read access on courses" ON courses FOR SELECT USING (true);
 CREATE POLICY "Allow public read access on schedules" ON schedules FOR SELECT USING (true);
+CREATE POLICY "Allow public read access on settings" ON settings FOR SELECT USING (true);
 
 -- Allow public insert/update/delete ONLY for testing/demo purposes. 
 -- IN PRODUCTION, restrict this to authenticated admins only.
@@ -58,6 +68,7 @@ CREATE POLICY "Allow public all access on lecturers for demo" ON lecturers FOR A
 CREATE POLICY "Allow public all access on rooms for demo" ON rooms FOR ALL USING (true);
 CREATE POLICY "Allow public all access on courses for demo" ON courses FOR ALL USING (true);
 CREATE POLICY "Allow public all access on schedules for demo" ON schedules FOR ALL USING (true);
+CREATE POLICY "Allow public all access on settings for demo" ON settings FOR ALL USING (true);
 
 -- Enable Realtime for schedules table
 -- Make sure to also enable this in the Supabase Dashboard: Database -> Replication -> tables -> select 'schedules'

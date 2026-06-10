@@ -100,10 +100,18 @@ export default function AdminDashboard() {
   const addCourse = async () => {
     if (!courseName) return;
     if (editCourseId) {
-      await supabase.from("courses").update({ name: courseName, code: courseCode }).eq("id", editCourseId);
+      const { error } = await supabase.from("courses").update({ name: courseName, code: courseCode }).eq("id", editCourseId);
+      if (error) {
+        alert("Gagal memperbarui mata kuliah: " + error.message);
+        return;
+      }
       setEditCourseId(null);
     } else {
-      await supabase.from("courses").insert({ name: courseName, code: courseCode });
+      const { error } = await supabase.from("courses").insert({ name: courseName, code: courseCode });
+      if (error) {
+        alert("Gagal menambahkan mata kuliah: " + error.message);
+        return;
+      }
     }
     setCourseName(""); setCourseCode(""); fetchData();
   };
@@ -144,14 +152,20 @@ export default function AdminDashboard() {
         name: lecturerName,
         ...(photo_url ? { photo_url: photo_url } : {})
       }).eq("id", editLecturerId);
-      if (error) console.error(error);
+      if (error) {
+        alert("Gagal memperbarui data dosen: " + error.message);
+        return;
+      }
       setEditLecturerId(null);
     } else {
       const { error } = await supabase.from('lecturers').insert({
         name: lecturerName,
         photo_url: photo_url
       });
-      if (error) console.error(error);
+      if (error) {
+        alert("Gagal menambahkan dosen: " + error.message);
+        return;
+      }
     }
     
     setLecturerName("");
@@ -170,10 +184,18 @@ export default function AdminDashboard() {
   const addRoom = async () => {
     if (!roomName) return;
     if (editRoomId) {
-      await supabase.from("rooms").update({ name: roomName }).eq("id", editRoomId);
+      const { error } = await supabase.from("rooms").update({ name: roomName }).eq("id", editRoomId);
+      if (error) {
+        alert("Gagal memperbarui ruangan: " + error.message);
+        return;
+      }
       setEditRoomId(null);
     } else {
-      await supabase.from("rooms").insert({ name: roomName });
+      const { error } = await supabase.from("rooms").insert({ name: roomName });
+      if (error) {
+        alert("Gagal menambahkan ruangan: " + error.message);
+        return;
+      }
     }
     setRoomName(""); fetchData();
   };
@@ -184,7 +206,7 @@ export default function AdminDashboard() {
   };
 
   const addSchedule = async () => {
-    if (!schedCourse || !schedLecturer || !schedRoom || !schedStart || !schedEnd) return alert("Fill all fields");
+    if (!schedCourse || !schedLecturer || !schedRoom || !schedStart || !schedEnd) return alert("Isi semua kolom jadwal!");
     
     const payload = {
       course_id: schedCourse,
@@ -197,10 +219,18 @@ export default function AdminDashboard() {
     };
 
     if (editScheduleId) {
-      await supabase.from("schedules").update(payload).eq("id", editScheduleId);
+      const { error } = await supabase.from("schedules").update(payload).eq("id", editScheduleId);
+      if (error) {
+        alert("Gagal memperbarui jadwal: " + error.message);
+        return;
+      }
       setEditScheduleId(null);
     } else {
-      await supabase.from("schedules").insert(payload);
+      const { error } = await supabase.from("schedules").insert(payload);
+      if (error) {
+        alert("Gagal menambahkan jadwal: " + error.message);
+        return;
+      }
     }
     
     // Broadcast ke TV agar langsung refresh
@@ -227,7 +257,12 @@ export default function AdminDashboard() {
   };
 
   const deleteRecord = async (table: string, id: string) => {
-    await supabase.from(table).delete().eq("id", id);
+    if (!confirm("Apakah Anda yakin ingin menghapus data ini?")) return;
+    const { error } = await supabase.from(table).delete().eq("id", id);
+    if (error) {
+      alert("Gagal menghapus data: " + error.message);
+      return;
+    }
     // Broadcast ke TV jika jadwal dihapus
     if (table === 'schedules' && broadcastChannel) {
       await broadcastChannel.send({
