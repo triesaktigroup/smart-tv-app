@@ -302,48 +302,58 @@ export default function AdminDashboard() {
       const { data, error } = await supabase.storage.from('videos').upload(fileName, file);
       if (error) {
         console.error(`Error uploading ${pathPrefix}:`, error);
-        return existingUrl;
+        alert(`Gagal mengunggah file ${pathPrefix}: ${error.message}. Harap pastikan bucket 'videos' sudah dibuat dan diatur sebagai publik di Supabase.`);
+        throw error;
       }
       const { data: publicUrlData } = supabase.storage.from('videos').getPublicUrl(fileName);
       return publicUrlData.publicUrl;
     };
 
-    setUploadStatus({ isUploading: true, text: "Mengunggah Video Indonesia Raya...", progress: 25 });
-    const finalVideoUrl = await uploadMedia(videoFile, videoUrl, 'indonesia-raya-video');
-    
-    setUploadStatus({ isUploading: true, text: "Mengunggah Audio Indonesia Raya...", progress: 45 });
-    const finalIndoAudioUrl = await uploadMedia(indonesiaRayaAudioFile, indonesiaRayaAudioUrl, 'indonesia-raya-audio');
-    
-    setUploadStatus({ isUploading: true, text: "Mengunggah Audio Sholat Dhuhur...", progress: 65 });
-    const finalDhuhurAudioUrl = await uploadMedia(dhuhurAudioFile, dhuhurAudioUrl, 'dhuhur-audio');
-    
-    setUploadStatus({ isUploading: true, text: "Mengunggah Audio Sholat Ashar...", progress: 85 });
-    const finalAsharAudioUrl = await uploadMedia(asharAudioFile, asharAudioUrl, 'ashar-audio');
+    try {
+      setUploadStatus({ isUploading: true, text: "Mengunggah Video Indonesia Raya...", progress: 25 });
+      const finalVideoUrl = await uploadMedia(videoFile, videoUrl, 'indonesia-raya-video');
+      
+      setUploadStatus({ isUploading: true, text: "Mengunggah Audio Indonesia Raya...", progress: 45 });
+      const finalIndoAudioUrl = await uploadMedia(indonesiaRayaAudioFile, indonesiaRayaAudioUrl, 'indonesia-raya-audio');
+      
+      setUploadStatus({ isUploading: true, text: "Mengunggah Audio Sholat Dhuhur...", progress: 65 });
+      const finalDhuhurAudioUrl = await uploadMedia(dhuhurAudioFile, dhuhurAudioUrl, 'dhuhur-audio');
+      
+      setUploadStatus({ isUploading: true, text: "Mengunggah Audio Sholat Ashar...", progress: 85 });
+      const finalAsharAudioUrl = await uploadMedia(asharAudioFile, asharAudioUrl, 'ashar-audio');
 
-    setUploadStatus({ isUploading: true, text: "Menyimpan pengaturan ke Database...", progress: 95 });
+      setUploadStatus({ isUploading: true, text: "Menyimpan pengaturan ke Database...", progress: 95 });
 
-    await Promise.all([
-      supabase.from("settings").upsert({ key: 'indonesia_raya_time', value: indonesiaRayaTime }, { onConflict: 'key' }),
-      supabase.from("settings").upsert({ key: 'indonesia_raya_video_url', value: finalVideoUrl }, { onConflict: 'key' }),
-      supabase.from("settings").upsert({ key: 'indonesia_raya_audio_url', value: finalIndoAudioUrl }, { onConflict: 'key' }),
-      supabase.from("settings").upsert({ key: 'dhuhur_time', value: dhuhurTime }, { onConflict: 'key' }),
-      supabase.from("settings").upsert({ key: 'dhuhur_audio_url', value: finalDhuhurAudioUrl }, { onConflict: 'key' }),
-      supabase.from("settings").upsert({ key: 'ashar_time', value: asharTime }, { onConflict: 'key' }),
-      supabase.from("settings").upsert({ key: 'ashar_audio_url', value: finalAsharAudioUrl }, { onConflict: 'key' })
-    ]);
-    
-    // Beritahu TV bahwa ada update settingan!
-    supabase.channel('announcements').send({
-      type: 'broadcast',
-      event: 'settings-updated',
-      payload: {}
-    });
+      const { error: dbError } = await supabase.from("settings").upsert([
+        { key: 'indonesia_raya_time', value: indonesiaRayaTime },
+        { key: 'indonesia_raya_video_url', value: finalVideoUrl },
+        { key: 'indonesia_raya_audio_url', value: finalIndoAudioUrl },
+        { key: 'dhuhur_time', value: dhuhurTime },
+        { key: 'dhuhur_audio_url', value: finalDhuhurAudioUrl },
+        { key: 'ashar_time', value: asharTime },
+        { key: 'ashar_audio_url', value: finalAsharAudioUrl }
+      ], { onConflict: 'key' });
 
-    setUploadStatus({ isUploading: true, text: "Selesai!", progress: 100 });
-    setTimeout(() => {
+      if (dbError) {
+        alert("Gagal menyimpan pengaturan ke database: " + dbError.message);
+        throw dbError;
+      }
+      
+      // Beritahu TV bahwa ada update settingan!
+      await supabase.channel('announcements').send({
+        type: 'broadcast',
+        event: 'settings-updated',
+        payload: {}
+      });
+
+      setUploadStatus({ isUploading: true, text: "Selesai!", progress: 100 });
+      setTimeout(() => {
+        setUploadStatus({ isUploading: false, text: "", progress: 0 });
+        alert("Pengaturan Khusus berhasil disimpan!");
+      }, 500);
+    } catch (e) {
       setUploadStatus({ isUploading: false, text: "", progress: 0 });
-      alert("Pengaturan Khusus berhasil disimpan!");
-    }, 500);
+    }
   };
 
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
