@@ -412,7 +412,6 @@ export default function TVDashboard() {
     
     let ongoing: Schedule[] = [];
     let upcoming: Schedule[] = [];
-    let ending: Schedule[] = [];
 
     schedules.forEach(schedule => {
       if (schedule.day_of_week !== currentDay) return;
@@ -433,14 +432,7 @@ export default function TVDashboard() {
 
       if (currentMs >= startMs && currentMs < endMs) {
         // Class is currently ongoing
-        const timeToEnd = endMs - currentMs;
-        const minsToEnd = Math.floor(timeToEnd / 60000);
-        
-        if (minsToEnd <= 15) {
-          ending.push(schedule);
-        } else {
-          ongoing.push(schedule);
-        }
+        ongoing.push(schedule);
       } else if (currentMs < startMs) {
         // Class is in the future today
         upcoming.push(schedule);
@@ -450,10 +442,12 @@ export default function TVDashboard() {
     // Sort upcoming by start time
     upcoming.sort((a, b) => a.start_time.localeCompare(b.start_time));
     
-    return { ongoing, upcoming, ending };
+    return { ongoing, upcoming };
   };
 
-  const { ongoing, upcoming, ending } = getOngoingAndUpcoming();
+  const { ongoing, upcoming } = getOngoingAndUpcoming();
+  const displayedOngoing = ongoing.slice(0, 4);
+  const displayedUpcoming = upcoming.slice(0, 6);
 
   // Helper to format HH:mm:ss to HH:mm
   if (!mounted) return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-500">Memuat sistem...</div>;
@@ -576,74 +570,39 @@ export default function TVDashboard() {
           </div>
         )}
 
-        {/* ONGOING & ENDING SOON (Left Column - 8 spans) */}
+        {/* ONGOING (Left Column - 8 spans) */}
         <div className="col-span-8 flex flex-col gap-6 z-10">
           <h2 className="text-2xl font-bold flex items-center gap-3 text-slate-200">
             <Clock className="w-6 h-6 text-emerald-400" />
             Sedang Berlangsung
           </h2>
           
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-max">
-            {/* Ending Soon Cards */}
-            {ending.map(schedule => (
-              <div key={schedule.id} className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-500/10 to-red-600/10 border border-orange-500/30 p-5 shadow-2xl backdrop-blur-sm group flex flex-col justify-between">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-red-500 animate-pulse" />
-                <div>
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="px-2.5 py-0.5 bg-orange-500/20 text-orange-400 rounded-full text-xs font-bold tracking-wider uppercase flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping" />
-                      Selesai
-                    </span>
-                    <span className="text-lg font-black tabular-nums text-orange-200 opacity-80">
-                      {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-extrabold text-white mb-3 leading-tight line-clamp-2 min-h-[3.5rem]">{schedule.courses.name}</h3>
-                  <div className="flex items-center gap-4 text-orange-200 mb-4">
-                    {schedule.lecturers.photo_url ? (
-                      <img src={schedule.lecturers.photo_url} alt={schedule.lecturers.name} className="w-16 h-16 rounded-xl object-cover border-2 border-orange-500/50 shadow-lg" />
-                    ) : (
-                      <div className="w-16 h-16 rounded-xl bg-orange-500/20 flex items-center justify-center border-2 border-orange-500/50 shadow-lg">
-                        <User className="w-8 h-8 opacity-70" />
-                      </div>
-                    )}
-                    <span className="text-lg font-bold line-clamp-2 leading-snug">{schedule.lecturers.name}</span>
-                  </div>
-                </div>
-                <div className="pt-3 border-t border-orange-500/20 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-white">
-                    <MapPin className="w-5 h-5 text-orange-400" />
-                    <span className="text-lg font-bold">{schedule.rooms.name}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-
+          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-max">
             {/* Ongoing Cards */}
-            {ongoing.map(schedule => (
-              <div key={schedule.id} className="rounded-3xl bg-slate-800/40 border border-slate-700/50 p-5 shadow-xl backdrop-blur-sm hover:bg-slate-800/60 transition-colors flex flex-col justify-between">
+            {displayedOngoing.map(schedule => (
+              <div key={schedule.id} className="rounded-3xl bg-slate-800/40 border border-slate-700/50 p-6 shadow-xl backdrop-blur-sm hover:bg-slate-800/60 transition-colors flex flex-col justify-between">
                 <div>
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-bold tracking-wider uppercase">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-sm font-bold tracking-wider uppercase">
                       Berlangsung
                     </span>
-                    <span className="text-lg font-black tabular-nums text-slate-300">
+                    <span className="text-2xl font-black tabular-nums text-slate-300">
                       {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3 leading-tight line-clamp-2 min-h-[3.5rem]">{schedule.courses.name}</h3>
-                  <div className="flex items-center gap-4 text-slate-300 mb-4">
+                  <h3 className="text-2xl font-bold text-white mb-4 leading-tight line-clamp-2 min-h-[3.5rem]">{schedule.courses.name}</h3>
+                  <div className="flex items-center gap-5 text-slate-300 mb-5">
                     {schedule.lecturers.photo_url ? (
-                      <img src={schedule.lecturers.photo_url} alt={schedule.lecturers.name} className="w-16 h-16 rounded-xl object-cover border-2 border-blue-500/50 shadow-lg" />
+                      <img src={schedule.lecturers.photo_url} alt={schedule.lecturers.name} className="w-20 h-20 rounded-2xl object-cover border-4 border-blue-500/50 shadow-xl shadow-blue-500/10" />
                     ) : (
-                      <div className="w-16 h-16 rounded-xl bg-blue-500/10 flex items-center justify-center border-2 border-blue-500/30 shadow-lg">
-                        <User className="w-8 h-8 opacity-70 text-blue-400" />
+                      <div className="w-20 h-20 rounded-2xl bg-blue-500/10 flex items-center justify-center border-4 border-blue-500/30 shadow-xl shadow-blue-500/10">
+                        <User className="w-10 h-10 opacity-70 text-blue-400" />
                       </div>
                     )}
-                    <span className="text-lg font-bold line-clamp-2 leading-snug">{schedule.lecturers.name}</span>
+                    <span className="text-2xl font-bold line-clamp-2 leading-snug">{schedule.lecturers.name}</span>
                   </div>
                 </div>
-                <div className="pt-3 border-t border-slate-700 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-700 flex items-center justify-between">
                   <div className="flex items-center gap-2 text-white">
                     <MapPin className="w-5 h-5 text-blue-400" />
                     <span className="text-lg font-semibold">{schedule.rooms.name}</span>
@@ -652,8 +611,8 @@ export default function TVDashboard() {
               </div>
             ))}
             
-            {ongoing.length === 0 && ending.length === 0 && (
-              <div className="col-span-3 h-64 border-2 border-dashed border-slate-800 rounded-3xl flex flex-col items-center justify-center text-slate-500">
+            {displayedOngoing.length === 0 && (
+              <div className="col-span-2 h-64 border-2 border-dashed border-slate-800 rounded-3xl flex flex-col items-center justify-center text-slate-500">
                 <BookOpen className="w-16 h-16 mb-4 opacity-20" />
                 <p className="text-xl font-medium">Tidak ada kelas yang sedang berlangsung</p>
               </div>
@@ -669,28 +628,28 @@ export default function TVDashboard() {
           </h2>
           
           <div className="flex flex-col gap-4 overflow-y-auto pr-2 pb-10" style={{ maxHeight: 'calc(100vh - 12rem)' }}>
-            {upcoming.length > 0 ? upcoming.map(schedule => (
-              <div key={schedule.id} className="rounded-2xl bg-slate-800/20 border border-slate-800 p-5 backdrop-blur-sm relative overflow-hidden group">
+            {displayedUpcoming.length > 0 ? displayedUpcoming.map(schedule => (
+              <div key={schedule.id} className="rounded-2xl bg-slate-800/20 border border-slate-800 p-4 backdrop-blur-sm relative overflow-hidden group">
                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50 group-hover:bg-blue-400 transition-colors" />
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-xl font-black tabular-nums text-white bg-slate-900/50 px-3 py-1 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-lg font-black tabular-nums text-white bg-slate-900/50 px-2.5 py-0.5 rounded-lg">
                     {formatTime(schedule.start_time)}
                   </span>
-                  <div className="flex items-center gap-1 text-slate-400 bg-slate-800/50 px-2 py-1 rounded-md text-sm font-semibold">
-                    <MapPin className="w-4 h-4" />
+                  <div className="flex items-center gap-1 text-slate-400 bg-slate-800/50 px-2 py-0.5 rounded-md text-xs font-semibold">
+                    <MapPin className="w-3.5 h-3.5" />
                     {schedule.rooms.name}
                   </div>
                 </div>
-                <h4 className="text-lg font-bold text-slate-200 leading-snug mb-1">{schedule.courses.name}</h4>
-                <div className="text-slate-400 font-medium flex items-center gap-4 mt-3">
+                <h4 className="text-base font-bold text-slate-200 leading-snug mb-1">{schedule.courses.name}</h4>
+                <div className="text-slate-400 font-medium flex items-center gap-3 mt-2">
                   {schedule.lecturers.photo_url ? (
-                    <img src={schedule.lecturers.photo_url} alt={schedule.lecturers.name} className="w-20 h-20 rounded-xl object-cover border-2 border-slate-700 shadow-md" />
+                    <img src={schedule.lecturers.photo_url} alt={schedule.lecturers.name} className="w-12 h-12 rounded-lg object-cover border border-slate-700 shadow-md" />
                   ) : (
-                    <div className="w-20 h-20 rounded-xl bg-slate-800 flex items-center justify-center border-2 border-slate-700 shadow-md">
-                      <User className="w-8 h-8 opacity-60 text-slate-500" />
+                    <div className="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center border border-slate-700 shadow-md">
+                      <User className="w-5 h-5 opacity-60 text-slate-500" />
                     </div>
                   )}
-                  <span className="text-lg font-bold">{schedule.lecturers.name}</span>
+                  <span className="text-base font-bold">{schedule.lecturers.name}</span>
                 </div>
               </div>
             )) : (
